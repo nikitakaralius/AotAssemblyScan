@@ -1,0 +1,12 @@
+﻿<Solution>
+  <Folder Name="/sln/">
+    <File Path="Readme.md" />
+    <File Path=".gitignore" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src\AotAssemblyScan\AotAssemblyScan.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests\AotAssemblyScan.Tests\AotAssemblyScan.Tests.csproj" Type="Classic C#" />
+  </Folder>
+</Solution>
