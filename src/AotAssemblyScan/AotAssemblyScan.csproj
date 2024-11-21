@@ -1,10 +1,58 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>AotAssemblyScan.Abstractions</PackageId>
+    <Version>1.0.0</Version>
+    <OutputType>Library</OutputType>
+    <Authors>Nikita Karalius</Authors>
+    <AssemblyTitle>AotAssemblyScan.Abstractions</AssemblyTitle>
+    <Description>
+      A library to improve assembly scanning using source generators instead of basic C# reflection.
+    </Description>
+    <RepositoryUrl>https://github.com/nikitakaralius/AotAssemblyScan</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/nikitakaralius/AotAssemblyScan</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0"/>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.11.0"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../Readme.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AotAssemblyScan.Abstractions\AotAssemblyScan.Abstractions.csproj" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Pack the generator dll in the analyzers/dotnet/cs path -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <!-- Pack the attributes dll in the analyzers/dotnet/cs path -->
+    <None Include="$(OutputPath)\AotAssemblyScan.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <!-- Pack the attributes dll in the lib\netstandard2.1 path -->
+    <None Include="$(OutputPath)\AotAssemblyScan.Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.1" Visible="true" />
+  </ItemGroup>
 
 </Project>
