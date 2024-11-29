@@ -1,0 +1,13 @@
+using AotAssemblyScan.Abstractions;
+
+namespace AotAssemblyScan.Sample;
+
+public static partial class AssemblyExtensions
+{
+    [AssemblyScan]
+    [HasAttribute<MarkerAttribute>]
+    [HasAttribute<Marker2Attribute>]
+    [Implements<IMarkerInterface>]
+    [Implements<IMarkerInterface2>]
+    public static partial IReadOnlyList<Type> GetMarkedTypes();
+}

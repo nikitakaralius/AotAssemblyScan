@@ -1,6 +1,11 @@
+using AotAssemblyScan.Sample;
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => AssemblyExtensions
+   .GetMarkedTypes()
+   .Select(x => x.Name)
+   .ToList());
 
 app.Run();
