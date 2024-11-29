@@ -10,7 +10,6 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Register syntax provider to find partial methods with the AssemblyScan attribute
         var methodDeclarations = context.SyntaxProvider
            .CreateSyntaxProvider(
                 predicate: static (node, _) =>
@@ -36,6 +35,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                 var matchingTypes = ScanAssemblyForMatchingTypes(compilation, attributes);
                 var sourceText = GenerateMethodImplementation(methodSymbol, matchingTypes);
 
+                // TODO: add namespace and type name
                 ctx.AddSource($"{methodSymbol.Name}_Generated.cs", SourceText.From(sourceText, Encoding.UTF8));
             }
         });
