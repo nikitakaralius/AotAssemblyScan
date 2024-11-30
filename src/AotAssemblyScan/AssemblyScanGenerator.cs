@@ -39,7 +39,8 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
 
         ITypeFilter[] filters =
         [
-            new IsAssignableToTypeFilter()
+            new IsAssignableToTypeFilter(),
+            new HasAttributeTypeFilter()
         ];
 
         foreach (var method in methods.Distinct())
