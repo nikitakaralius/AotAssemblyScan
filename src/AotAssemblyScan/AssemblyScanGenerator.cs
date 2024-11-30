@@ -35,8 +35,13 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                 var matchingTypes = ScanAssemblyForMatchingTypes(compilation, attributes);
                 var sourceText = GenerateMethodImplementation(methodSymbol, matchingTypes);
 
-                // TODO: add namespace and type name
-                ctx.AddSource($"{methodSymbol.Name}_Generated.cs", SourceText.From(sourceText, Encoding.UTF8));
+                var @namespace = methodSymbol.ContainingNamespace.ToDisplayString();
+                var @class = methodSymbol.ContainingType.Name;
+                var methodName = methodSymbol.Name;
+
+                ctx.AddSource(
+                    $"{@namespace}_{@class}_{methodName}_Generated.cs",
+                    SourceText.From(sourceText, Encoding.UTF8));
             }
         });
     }
