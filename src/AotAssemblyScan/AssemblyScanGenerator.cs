@@ -1,4 +1,5 @@
 using System.Text;
+using AotAssemblyScan.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -13,11 +14,13 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
         var methodDeclarations = context.SyntaxProvider
            .CreateSyntaxProvider(
                 predicate: static (node, _) =>
-                    node is MethodDeclarationSyntax method && method.AttributeLists.Count > 0,
+                    node is MethodDeclarationSyntax {AttributeLists.Count: > 0},
                 transform: static (context, _) => (MethodDeclarationSyntax) context.Node)
-           .Where(static method => method != null);
+           .Where(static method => method is not null);
 
-        var compilationAndMethods = context.CompilationProvider.Combine(methodDeclarations.Collect());
+        var compilationAndMethods = context
+           .CompilationProvider
+           .Combine(methodDeclarations.Collect());
 
         context.RegisterSourceOutput(compilationAndMethods, (ctx, source) =>
         {
@@ -28,7 +31,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                 var semanticModel = compilation.GetSemanticModel(method.SyntaxTree);
                 var methodSymbol = semanticModel.GetDeclaredSymbol(method);
 
-                if (methodSymbol == null || !HasAttribute(methodSymbol, "AssemblyScanAttribute"))
+                if (methodSymbol is null || !methodSymbol.HasAttribute("AssemblyScanAttribute"))
                     continue;
 
                 var attributes = ExtractGenericTypeAttributes(methodSymbol);
@@ -46,25 +49,18 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
         });
     }
 
-    private static bool HasAttribute(ISymbol symbol, string attributeName)
-    {
-        return symbol
-           .GetAttributes()
-           .Any(attr => attr.AttributeClass?.Name == attributeName);
-    }
-
     private static List<(string AttributeKind, INamedTypeSymbol TypeSymbol)> ExtractGenericTypeAttributes(
         ISymbol methodSymbol)
     {
         return methodSymbol
            .GetAttributes()
-           .Where(attr =>
-                attr.AttributeClass != null &&
-                (attr.AttributeClass.Name.StartsWith("HasAttributeAttribute") ||
-                 attr.AttributeClass.Name.StartsWith("ImplementsAttribute")) &&
-                attr.AttributeClass.IsGenericType)
+           .Where(a =>
+                a.AttributeClass is not null &&
+                (a.AttributeClass.Name.StartsWith("HasAttributeAttribute") ||
+                 a.AttributeClass.Name.StartsWith("ImplementsAttribute")) &&
+                a.AttributeClass.IsGenericType)
            .Select(attr => (attr.AttributeClass!.Name, attr.AttributeClass.TypeArguments[0] as INamedTypeSymbol))
-           .Where(pair => pair.Item2 != null)
+           .Where(pair => pair.Item2 is not null)
            .ToList()!;
     }
 
@@ -84,15 +80,12 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
 
             foreach (var typeDeclaration in typeDeclarations)
             {
-                var typeSymbol = semanticModel.GetDeclaredSymbol(typeDeclaration) as INamedTypeSymbol;
-
-                if (typeSymbol == null)
+                if (semanticModel.GetDeclaredSymbol(typeDeclaration) is not INamedTypeSymbol typeSymbol)
                     continue;
 
                 bool matchesAttributes = filters
                    .Where(f => f.AttributeKind.StartsWith("HasAttribute"))
-                   .All(f => typeSymbol.GetAttributes()
-                       .Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, f.TypeSymbol)));
+                   .All(f => typeSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, f.TypeSymbol)));
 
                 bool matchesInterfaces = filters
                    .Where(f => f.AttributeKind.StartsWith("Implements"))
