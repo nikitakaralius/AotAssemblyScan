@@ -27,10 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AotAssemblyScan\AotAssemblyScan.csproj" />
-    <ProjectReference Include="..\..\src\AotAssemblyScan.Abstractions\AotAssemblyScan.Abstractions.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="true" />
+    <ProjectReference 
+      Include="..\..\src\AotAssemblyScan\AotAssemblyScan.csproj" />
+    <ProjectReference 
+      Include="..\..\src\AotAssemblyScan.Abstractions\AotAssemblyScan.Abstractions.csproj"
+      OutputItemType="Analyzer"
+      ReferenceOutputAssembly="true" />
   </ItemGroup>
 
 </Project>
