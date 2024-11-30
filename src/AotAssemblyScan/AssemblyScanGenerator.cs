@@ -119,7 +119,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                      {
                          public static partial IReadOnlyList<Type> {{methodSymbol.Name}}()
                          {
-                             return new List<Type> { {{typeList}} };
+                             return new Type[] { {{typeList}} };
                          }
                      }
                  }
