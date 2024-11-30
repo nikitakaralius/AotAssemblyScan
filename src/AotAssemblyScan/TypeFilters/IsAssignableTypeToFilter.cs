@@ -28,13 +28,13 @@ public sealed class IsAssignableToTypeFilter : ITypeFilter
 
     public bool Matches(INamedTypeSymbol type)
     {
-        var baseTypes = type.AllInterfaces;
+        var typesToCheck = type.AllInterfaces.Add(type);
 
         if (type.BaseType is not null)
-            baseTypes = baseTypes.Add(type.BaseType);
+            typesToCheck = typesToCheck.Add(type.BaseType);
 
         return _assignableToTypes
-           .All(typeFromAttribute => baseTypes
+           .All(typeFromAttribute => typesToCheck
                .Any(baseType => SymbolEqualityComparer.Default.Equals(typeFromAttribute, baseType)));
     }
 }
