@@ -1,6 +1,8 @@
+using System.Collections.Immutable;
 using System.Text;
-using AotAssemblyScan.Extensions;
+
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -11,42 +13,47 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var methodDeclarations = context.SyntaxProvider
-           .CreateSyntaxProvider(
-                predicate: static (node, _) =>
-                    node is MethodDeclarationSyntax {AttributeLists.Count: > 0},
-                transform: static (context, _) => (MethodDeclarationSyntax) context.Node)
-           .Where(static method => method is not null);
+        var partialAssemblyScanMethodsProvider = context
+           .SyntaxProvider
+           .ForAttributeWithMetadataName(
+                WellKnownNamings.AssemblyScanAttribute,
+                predicate: (node, _) => node is MethodDeclarationSyntax,
+                transform: (ctx, _) => (MethodDeclarationSyntax) ctx.TargetNode)
+           .Where(syntax => syntax.AttributeLists.Count > 0)
+           .Where(syntax => syntax.Modifiers.Any(SyntaxKind.PartialKeyword));
 
-        var compilationAndMethods = context
+        var compilationWithMethods = context
            .CompilationProvider
-           .Combine(methodDeclarations.Collect());
+           .Combine(partialAssemblyScanMethodsProvider.Collect());
 
-        context.RegisterSourceOutput(compilationAndMethods, (ctx, source) =>
+        context.RegisterSourceOutput(
+            compilationWithMethods,
+            GenerateCode);
+    }
+
+    private void GenerateCode(
+        SourceProductionContext context,
+        (Compilation Left, ImmutableArray<MethodDeclarationSyntax> Right) source)
+    {
+        var (compilation, methods) = source;
+
+        foreach (var method in methods.Distinct())
         {
-            var (compilation, methods) = source;
+            var semanticModel = compilation.GetSemanticModel(method.SyntaxTree);
+            var methodSymbol = ModelExtensions.GetDeclaredSymbol(semanticModel, method)!;
 
-            foreach (var method in methods.Distinct())
-            {
-                var semanticModel = compilation.GetSemanticModel(method.SyntaxTree);
-                var methodSymbol = semanticModel.GetDeclaredSymbol(method);
+            var attributes = ExtractGenericTypeAttributes(methodSymbol);
+            var matchingTypes = ScanAssemblyForMatchingTypes(compilation, attributes);
+            var sourceText = GenerateMethodImplementation(methodSymbol, matchingTypes);
 
-                if (methodSymbol is null || !methodSymbol.HasAttribute("AssemblyScanAttribute"))
-                    continue;
+            var @namespace = methodSymbol.ContainingNamespace.ToDisplayString();
+            var @class = methodSymbol.ContainingType.Name;
+            var methodName = methodSymbol.Name;
 
-                var attributes = ExtractGenericTypeAttributes(methodSymbol);
-                var matchingTypes = ScanAssemblyForMatchingTypes(compilation, attributes);
-                var sourceText = GenerateMethodImplementation(methodSymbol, matchingTypes);
-
-                var @namespace = methodSymbol.ContainingNamespace.ToDisplayString();
-                var @class = methodSymbol.ContainingType.Name;
-                var methodName = methodSymbol.Name;
-
-                ctx.AddSource(
-                    $"{@namespace}_{@class}_{methodName}_Generated.cs",
-                    SourceText.From(sourceText, Encoding.UTF8));
-            }
-        });
+            context.AddSource(
+                $"{@namespace}_{@class}_{methodName}_Generated.cs",
+                SourceText.From(sourceText, Encoding.UTF8));
+        }
     }
 
     private static List<(string AttributeKind, INamedTypeSymbol TypeSymbol)> ExtractGenericTypeAttributes(
@@ -75,12 +82,13 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
             var semanticModel = compilation.GetSemanticModel(tree);
             var root = tree.GetRoot();
 
-            var typeDeclarations = root.DescendantNodes()
+            var typeDeclarations = root
+               .DescendantNodes()
                .OfType<TypeDeclarationSyntax>();
 
             foreach (var typeDeclaration in typeDeclarations)
             {
-                if (semanticModel.GetDeclaredSymbol(typeDeclaration) is not INamedTypeSymbol typeSymbol)
+                if (ModelExtensions.GetDeclaredSymbol(semanticModel, typeDeclaration) is not INamedTypeSymbol typeSymbol)
                     continue;
 
                 bool matchesAttributes = filters
@@ -107,6 +115,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
         var typeList = string.Join(", ", types.Select(t => $"typeof({t.ToDisplayString()})"));
 
         return $$"""
+                 // <auto-generated />
 
                  using System;
                  using System.Collections.Generic;

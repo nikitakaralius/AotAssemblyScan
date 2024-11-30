@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <ImplicitUsings>true</ImplicitUsings>
-    <RootNamespace>AotAssemblyScan.Abstractions</RootNamespace>
+    <RootNamespace>AotAssemblyScan</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>

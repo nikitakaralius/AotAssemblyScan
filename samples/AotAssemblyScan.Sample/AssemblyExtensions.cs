@@ -1,5 +1,3 @@
-using AotAssemblyScan.Abstractions;
-
 namespace AotAssemblyScan.Sample;
 
 public static partial class AssemblyExtensions
