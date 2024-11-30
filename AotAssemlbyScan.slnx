@@ -1,9 +1,13 @@
 ﻿<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples\AotAssemblyScan.Sample\AotAssemblyScan.Sample.csproj" Type="Classic C#" />
+  </Folder>
   <Folder Name="/sln/">
     <File Path="Readme.md" />
     <File Path=".gitignore" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\AotAssemblyScan.Abstractions\AotAssemblyScan.Abstractions.csproj" Type="Classic C#" />
     <Project Path="src\AotAssemblyScan\AotAssemblyScan.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tests/">

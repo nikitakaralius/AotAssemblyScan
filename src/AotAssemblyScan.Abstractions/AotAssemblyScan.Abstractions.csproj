@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <ImplicitUsings>true</ImplicitUsings>
+    <RootNamespace>AotAssemblyScan</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>AotAssemblyScan.Abstractions</PackageId>
+    <Version>1.0.0</Version>
+    <OutputType>Library</OutputType>
+    <Authors>Nikita Karalius</Authors>
+    <AssemblyTitle>AotAssemblyScan.Abstractions</AssemblyTitle>
+    <Description>
+      A library to improve assembly scanning using source generators instead of basic C# reflection.
+    </Description>
+    <RepositoryUrl>https://github.com/nikitakaralius/AotAssemblyScan</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/nikitakaralius/AotAssemblyScan</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../Readme.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+
+</Project>
