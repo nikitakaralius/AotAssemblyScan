@@ -466,7 +466,50 @@ public class AssemblyScanGeneratorTests
            .UseDirectory(TestConstants.SnapshotsDirectory);
     }
 
-    // combines HasAttribute using &&
+    [Fact]
+    public async Task Combines_multiple_HasAttribute_attributes_with_the_logical_AND_operator()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [HasAttribute<MarkerAttribute>]
+                [HasAttribute<Marker2Attribute>]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerAttribute),
+                CSharpSyntaxTree.ParseText(TestCode.Marker2Attribute),
+
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithAttributeClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWith2AttributesClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithAttributeRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithAttributeStruct),
+
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+
+    }
 
     // includes only abstract classes when using IsAbstract
 
