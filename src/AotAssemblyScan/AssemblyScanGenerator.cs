@@ -21,7 +21,8 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                 transform: (ctx, _) => (MethodDeclarationSyntax) ctx.TargetNode)
            .Where(syntax => syntax.AttributeLists.Count > 0)
            .Where(syntax => syntax.Modifiers.Any(SyntaxKind.PartialKeyword))
-           .Where(syntax => syntax.ParameterList.Parameters.Count == 0);
+           .Where(syntax => syntax.ParameterList.Parameters.Count == 0)
+           .Where(syntax => syntax.TypeParameterList is null || syntax.TypeParameterList.Parameters.Count == 0);
 
         var compilationWithMethods = context
            .CompilationProvider
