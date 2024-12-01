@@ -131,6 +131,47 @@ public class AssemblyScanGeneratorTests
     }
 
     [Fact]
+    public void Does_not_generate_code_for_generic_method()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                public static partial IReadOnlyList<Type> GetMarkedTypes<T>();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        result
+           .GetRunResult()
+           .GeneratedTrees
+           .Should()
+           .HaveCount(0);
+    }
+
+    [Fact]
     public async Task When_only_assembly_scan_attribute_specified_should_return_all_assembly_types()
     {
         // Arrange
