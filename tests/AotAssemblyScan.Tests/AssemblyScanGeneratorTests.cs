@@ -92,7 +92,43 @@ public class AssemblyScanGeneratorTests
            .HaveCount(0);
     }
 
-    // when only assembly scan attribute specified should return all assembly types
+    [Fact]
+    public async Task When_only_assembly_scan_attribute_specified_should_return_all_assembly_types()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
 
     // generates code for methods with similar name
 
