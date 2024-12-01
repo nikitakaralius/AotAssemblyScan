@@ -7,7 +7,7 @@ namespace DefaultAssembly
     {
         public static partial System.Collections.Generic.IReadOnlyList<System.Type> GetMarkedTypes()
         {
-            return new Type[] { typeof(Company.Project.Classes.MarkedWithAttributeClass), typeof(Company.Project.Classes.MarkedWith2AttributesClass), typeof(Company.Project.Records.MarkedWithAttributeRecord), typeof(Company.Project.Structs.MarkedWithAttributeStruct) };
+            return new System.Type[] { typeof(Company.Project.Classes.MarkedWithAttributeClass), typeof(Company.Project.Classes.MarkedWith2AttributesClass), typeof(Company.Project.Records.MarkedWithAttributeRecord), typeof(Company.Project.Structs.MarkedWithAttributeStruct) };
         }
     }
 }

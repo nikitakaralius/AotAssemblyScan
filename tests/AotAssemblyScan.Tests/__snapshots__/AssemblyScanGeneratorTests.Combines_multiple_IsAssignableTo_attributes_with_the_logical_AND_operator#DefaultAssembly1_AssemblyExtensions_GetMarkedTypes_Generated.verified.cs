@@ -7,7 +7,7 @@ namespace DefaultAssembly1
     {
         public static partial System.Collections.Generic.IReadOnlyList<System.Type> GetMarkedTypes()
         {
-            return new Type[] { typeof(Company.Project.Classes.MarkedWith2InterfacesClass) };
+            return new System.Type[] { typeof(Company.Project.Classes.MarkedWith2InterfacesClass) };
         }
     }
 }

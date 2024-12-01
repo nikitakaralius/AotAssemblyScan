@@ -7,7 +7,7 @@ namespace DefaultAssembly
     {
         public static partial System.Collections.Generic.IReadOnlyList<System.Type> GetMarkedTypes()
         {
-            return new Type[] { typeof(Company.Project.Classes.SomeAbstractClass) };
+            return new System.Type[] { typeof(Company.Project.Classes.SomeAbstractClass) };
         }
     }
 }
