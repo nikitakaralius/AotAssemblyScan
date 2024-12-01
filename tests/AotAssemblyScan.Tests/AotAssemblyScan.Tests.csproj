@@ -10,10 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Basic.Reference.Assemblies.Net80" Version="1.7.9" />
     <PackageReference Include="coverlet.collector" Version="6.0.2"/>
+    <PackageReference Include="FluentAssertions" Version="6.12.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
-    <PackageReference Include="Verify.Xunit" Version="28.3.2" />
+    <PackageReference Include="Verify.Xunit" Version="28.4.0" />
     <PackageReference Include="xunit" Version="2.9.2"/>
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2"/>
   </ItemGroup>

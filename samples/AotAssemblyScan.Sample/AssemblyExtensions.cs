@@ -7,5 +7,6 @@ public static partial class AssemblyExtensions
     // [HasAttribute<MarkerAttribute>, HasAttribute<Marker2Attribute>]
     [IsAssignableTo<MarkedClass>]
     // [IsAssignableTo<IMarkerInterface2>]
+    [IsAbstract]
     public static partial IReadOnlyList<Type> GetMarkedTypes();
 }
