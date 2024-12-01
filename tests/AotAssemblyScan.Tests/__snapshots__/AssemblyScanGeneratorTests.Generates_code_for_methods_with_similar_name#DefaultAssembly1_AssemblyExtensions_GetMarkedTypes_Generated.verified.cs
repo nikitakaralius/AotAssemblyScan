@@ -7,7 +7,7 @@ namespace DefaultAssembly1
     {
         public static partial System.Collections.Generic.IReadOnlyList<System.Type> GetMarkedTypes()
         {
-            return new Type[] { typeof(DefaultAssembly1.AssemblyExtensions), typeof(DefaultAssembly2.AssemblyExtensions) };
+            return new System.Type[] { typeof(DefaultAssembly1.AssemblyExtensions), typeof(DefaultAssembly2.AssemblyExtensions) };
         }
     }
 }

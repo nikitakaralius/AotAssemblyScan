@@ -7,7 +7,7 @@ namespace DefaultAssembly
     {
         public static partial System.Type[] GetMarkedTypes()
         {
-            return new Type[] { typeof(IMarker) };
+            return new System.Type[] { typeof(IMarker) };
         }
     }
 }

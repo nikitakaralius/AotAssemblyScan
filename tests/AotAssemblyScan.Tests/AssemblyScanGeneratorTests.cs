@@ -549,7 +549,7 @@ public class AssemblyScanGeneratorTests
     }
 
     [Fact]
-    public async Task Includes_only_non_abstract_classes_when_using_IsAbstract_false()
+    public async Task Filters_abstract_classes_when_using_IsAbstract_false()
     {
         // Arrange
         // language=csharp
@@ -586,7 +586,79 @@ public class AssemblyScanGeneratorTests
 
     }
 
-    // includes only interfaces when using IsInterface
+    [Fact]
+    public async Task Includes_only_interfaces_when_using_IsInterface()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
 
-    // filters interfaces when using IsInterface(false)
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsInterface]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.Class),
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface2),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
+
+    [Fact]
+    public async Task Filters_interfaces_when_using_IsInterface_false()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsInterface(false)]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.Class),
+                CSharpSyntaxTree.ParseText(TestCode.AbstractClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
 }

@@ -43,7 +43,8 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
         [
             new IsAssignableToTypeFilter(),
             new HasAttributeTypeFilter(),
-            new IsAbstractTypeFilter()
+            new IsAbstractTypeFilter(),
+            new IsInterfaceTypeFilter()
         ];
 
         foreach (var method in methods.Distinct())
@@ -172,7 +173,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
     {
         if (types.Count == 0)
             // language=csharp
-            return "return Array.Empty<Type>();";
+            return "return System.Array.Empty<System.Type>();";
 
         var typesToReturn = string.Join(", ", types.Select(t =>
         {
@@ -181,6 +182,6 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
         }));
 
         // language=csharp
-        return $$"""return new Type[] { {{typesToReturn}} };""";
+        return $$"""return new System.Type[] { {{typesToReturn}} };""";
     }
 }
