@@ -28,11 +28,12 @@ public sealed class HasAttributeTypeFilter : ITypeFilter
 
     public bool Matches(INamedTypeSymbol type)
     {
-        return _attributesToHave
-           .All(attributeToHave => type
-               .GetAttributes()
-               .Any(typeAttribute => SymbolEqualityComparer.Default.Equals(
-                    typeAttribute.AttributeClass,
-                    attributeToHave)));
+        foreach (var attributeToHave in _attributesToHave)
+        {
+            if (!type.GetAttributes().Any(typeAttribute => SymbolEqualityComparer.Default.Equals(typeAttribute.AttributeClass, attributeToHave)))
+                return false;
+        }
+
+        return true;
     }
 }
