@@ -612,6 +612,7 @@ public class AssemblyScanGeneratorTests
             [
                 CSharpSyntaxTree.ParseText(TestCode.Class),
                 CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface2),
                 CSharpSyntaxTree.ParseText(methodCode)
             ]);
 
@@ -648,6 +649,7 @@ public class AssemblyScanGeneratorTests
             "DefaultAssembly",
             [
                 CSharpSyntaxTree.ParseText(TestCode.Class),
+                CSharpSyntaxTree.ParseText(TestCode.AbstractClass),
                 CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
                 CSharpSyntaxTree.ParseText(methodCode)
             ]);
