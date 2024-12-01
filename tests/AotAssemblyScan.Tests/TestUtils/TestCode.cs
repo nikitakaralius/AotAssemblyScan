@@ -17,6 +17,20 @@ public static class TestCode
     public const string Marker2Attribute = "public sealed class Marker2Attribute : System.Attribute;";
 
     [StringSyntax("csharp")]
+    public const string Class =
+        """
+        public class SomeClass;
+        """;
+
+    [StringSyntax("csharp")]
+    public const string AbstractClass =
+        """
+        namespace Company.Project.Classes;
+
+        public abstract class SomeAbstractClass;
+        """;
+
+    [StringSyntax("csharp")]
     public const string MarkedWithInterfaceClass =
         """
         namespace Company.Project.Classes;
