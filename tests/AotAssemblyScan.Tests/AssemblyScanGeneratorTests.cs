@@ -381,7 +381,47 @@ public class AssemblyScanGeneratorTests
 
     }
 
-    // combines IsAssignableTo using &&
+    [Fact]
+    public async Task Combines_multiple_IsAssignableTo_attributes_with_the_logical_AND_operator()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly1;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsAssignableTo<IMarker>]
+                [IsAssignableTo<IMarker2>]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface2),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWith2InterfacesClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
 
     // finds types with HasAttribute
 

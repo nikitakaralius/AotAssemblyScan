@@ -8,6 +8,9 @@ public static class TestCode
     public const string MarkerInterface = "public interface IMarker;";
 
     [StringSyntax("csharp")]
+    public const string MarkerInterface2 = "public interface IMarker2;";
+
+    [StringSyntax("csharp")]
     public const string MarkerAttribute = "public sealed class MarkerAttribute : Attribute;";
 
     [StringSyntax("csharp")]
@@ -16,6 +19,14 @@ public static class TestCode
         namespace Company.Project.Classes;
         
         public class MarkedWithIntefaceClass : IMarker;
+        """;
+
+    [StringSyntax("csharp")]
+    public const string MarkedWith2InterfacesClass =
+        """
+        namespace Company.Project.Classes;
+        
+        public class MarkedWith2InterfacesClass : IMarker, IMarker2;
         """;
 
     [StringSyntax("csharp")]
