@@ -7,7 +7,7 @@ namespace AotAssemblyScan.TypeFilters;
 public sealed class IsAbstractTypeFilter : ITypeFilter
 {
     private const string AttributeTypeName = "IsAbstract";
-    private bool _isAbstract = true;
+    private bool? _isAbstract = null;
 
     public bool TryAdd(AttributeData attribute)
     {
@@ -30,6 +30,11 @@ public sealed class IsAbstractTypeFilter : ITypeFilter
         return true;
     }
 
-    public bool Matches(INamedTypeSymbol type) =>
-        type.IsAbstract == _isAbstract;
+    public bool Matches(INamedTypeSymbol type)
+    {
+        if (_isAbstract is null)
+            return true;
+
+        return type.IsAbstract == _isAbstract;
+    }
 }
