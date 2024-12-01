@@ -1,13 +1,11 @@
-#pragma warning disable CS0414 // Field is assigned but its value is never used
-
 using Microsoft.CodeAnalysis;
 
 namespace AotAssemblyScan.TypeFilters;
 
 public sealed class IsAbstractTypeFilter : ITypeFilter
 {
-    private const string AttributeTypeName = "IsAbstract";
-    private bool? _isAbstract = null;
+    private const string AttributeTypeName = "IsAbstractAttribute";
+    private bool? _isAbstract;
 
     public bool TryAdd(AttributeData attribute)
     {
