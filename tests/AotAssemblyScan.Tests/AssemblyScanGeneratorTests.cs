@@ -268,7 +268,49 @@ public class AssemblyScanGeneratorTests
 
     }
 
-    // generates code only for IReadOnlyList (handle IEnumerable, ICollection, IList, etc. in the future)
+    [Theory]
+    [InlineData("Type[]")]
+    [InlineData("IReadOnlyList<Type>")]
+    [InlineData("IList<Type>")]
+    [InlineData("IEnumerable<Type>")]
+    [InlineData("ICollection<Type>")]
+    public async Task Generates_code_for_different_return_types(string returnType)
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            $$"""
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                public static partial {{returnType}} GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseParameters(returnType)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
 
     // includes the type itself in IsAssignableTo
 
