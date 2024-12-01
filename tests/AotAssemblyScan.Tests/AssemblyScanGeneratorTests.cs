@@ -225,7 +225,6 @@ public class AssemblyScanGeneratorTests
             public static partial class AssemblyExtensions
             {
                 [AssemblyScan]
-                [IsAssignableTo<IMarker>]
                 public static partial IReadOnlyList<Type> GetMarkedTypes();
             }
             """;
@@ -242,7 +241,6 @@ public class AssemblyScanGeneratorTests
             public static partial class AssemblyExtensions
             {
                 [AssemblyScan]
-                [IsAssignableTo<IMarker>]
                 public static partial IReadOnlyList<Type> GetMarkedTypes();
             }
             """;
@@ -250,10 +248,6 @@ public class AssemblyScanGeneratorTests
         var compilation = DefaultCompilation.Create(
             "DefaultAssembly",
             [
-                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
-                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
-                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
-                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
                 CSharpSyntaxTree.ParseText(methodCode1),
                 CSharpSyntaxTree.ParseText(methodCode2)
             ]);
@@ -347,7 +341,45 @@ public class AssemblyScanGeneratorTests
            .UseDirectory(TestConstants.SnapshotsDirectory);
     }
 
-    // finds inheritors in IsAssignableTo
+    [Fact]
+    public async Task Finds_generic_type_inheritors_from_IsAssignableTo_attribute()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly1;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsAssignableTo<IMarker>]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
+                CSharpSyntaxTree.ParseText(methodCode),
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+
+    }
 
     // combines IsAssignableTo using &&
 
