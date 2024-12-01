@@ -20,7 +20,8 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                 predicate: (node, _) => node is MethodDeclarationSyntax,
                 transform: (ctx, _) => (MethodDeclarationSyntax) ctx.TargetNode)
            .Where(syntax => syntax.AttributeLists.Count > 0)
-           .Where(syntax => syntax.Modifiers.Any(SyntaxKind.PartialKeyword));
+           .Where(syntax => syntax.Modifiers.Any(SyntaxKind.PartialKeyword))
+           .Where(syntax => syntax.ParameterList.Parameters.Count == 0);
 
         var compilationWithMethods = context
            .CompilationProvider

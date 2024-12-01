@@ -18,7 +18,6 @@ public class AssemblyScanGeneratorTests
     public void Does_not_generate_implementation_without_assembly_scan_attribute()
     {
         // Arrange
-
         // language=csharp
         string code =
             """
@@ -56,7 +55,6 @@ public class AssemblyScanGeneratorTests
     public void Does_not_generate_implementation_without_partial_modifier()
     {
         // Arrange
-
         // language=csharp
         string code =
             """
@@ -95,6 +93,7 @@ public class AssemblyScanGeneratorTests
     public void Does_not_generate_code_for_method_with_parameters()
     {
         // Arrange
+        // language=csharp
         string methodCode =
             """
             using System;
