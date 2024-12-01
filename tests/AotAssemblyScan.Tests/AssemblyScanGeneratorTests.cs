@@ -423,7 +423,48 @@ public class AssemblyScanGeneratorTests
            .UseDirectory(TestConstants.SnapshotsDirectory);
     }
 
-    // finds types with HasAttribute
+    [Fact]
+    public async Task Finds_types_marked_with_attribute_specified_in_HasAttribute()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [HasAttribute<MarkerAttribute>]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerAttribute),
+                CSharpSyntaxTree.ParseText(TestCode.Marker2Attribute),
+
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithAttributeClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWith2AttributesClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithAttributeRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithAttributeStruct),
+
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
 
     // combines HasAttribute using &&
 

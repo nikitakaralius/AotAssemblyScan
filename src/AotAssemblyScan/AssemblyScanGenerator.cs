@@ -171,7 +171,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
     {
         if (types.Count == 0)
             // language=csharp
-            return "Array.Empty<Type>();";
+            return "return Array.Empty<Type>();";
 
         var typesToReturn = string.Join(", ", types.Select(t =>
         {
