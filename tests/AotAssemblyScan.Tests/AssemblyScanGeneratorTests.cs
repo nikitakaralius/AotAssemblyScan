@@ -548,9 +548,8 @@ public class AssemblyScanGeneratorTests
            .UseDirectory(TestConstants.SnapshotsDirectory);
     }
 
-    // TODO: rename
     [Fact]
-    public async Task Includes_only_non_abstract_classes_when_using_IsAbstract_false()
+    public async Task Filters_abstract_classes_when_using_IsAbstract_false()
     {
         // Arrange
         // language=csharp
