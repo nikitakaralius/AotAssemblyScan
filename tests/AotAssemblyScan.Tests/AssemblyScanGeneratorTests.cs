@@ -209,7 +209,6 @@ public class AssemblyScanGeneratorTests
            .UseDirectory(TestConstants.SnapshotsDirectory);
     }
 
-    // generates code for methods with similar name
     [Fact]
     public async Task Generates_code_for_methods_with_similar_name()
     {
@@ -312,7 +311,41 @@ public class AssemblyScanGeneratorTests
            .UseDirectory(TestConstants.SnapshotsDirectory);
     }
 
-    // includes the type itself in IsAssignableTo
+    [Fact]
+    public async Task Includes_generic_type_from_IsAssignableTo_attribute()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsAssignableTo<IMarker>]
+                public static partial Type[] GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(methodCode)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+    }
 
     // finds inheritors in IsAssignableTo
 
