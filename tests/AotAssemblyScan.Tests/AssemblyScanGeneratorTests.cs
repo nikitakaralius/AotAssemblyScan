@@ -1,6 +1,5 @@
 using AotAssemblyScan.Tests.TestUtils;
 using FluentAssertions;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace AotAssemblyScan.Tests;
@@ -131,6 +130,63 @@ public class AssemblyScanGeneratorTests
     }
 
     // generates code for methods with similar name
+    [Fact]
+    public async Task Generates_code_for_methods_with_similar_name()
+    {
+        // Arrange
+        // language=csharp
+        string methodCode1 =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly1;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsAssignableTo<IMarker>]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        // language=csharp
+        string methodCode2 =
+            """
+            using System;
+            using System.Collections.Generic;
+            using AotAssemblyScan;
+
+            namespace DefaultAssembly2;
+
+            public static partial class AssemblyExtensions
+            {
+                [AssemblyScan]
+                [IsAssignableTo<IMarker>]
+                public static partial IReadOnlyList<Type> GetMarkedTypes();
+            }
+            """;
+
+        var compilation = DefaultCompilation.Create(
+            "DefaultAssembly",
+            [
+                CSharpSyntaxTree.ParseText(TestCode.MarkerInterface),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceClass),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceRecord),
+                CSharpSyntaxTree.ParseText(TestCode.MarkedWithInterfaceStruct),
+                CSharpSyntaxTree.ParseText(methodCode1),
+                CSharpSyntaxTree.ParseText(methodCode2)
+            ]);
+
+        // Act
+        var result = _generatorDriver.RunGenerators(compilation);
+
+        // Assert
+        await Verify(result)
+           .UseDirectory(TestConstants.SnapshotsDirectory);
+
+    }
 
     // does not generate code for method with parameters
 
