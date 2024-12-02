@@ -23,7 +23,7 @@ public static partial class AssemblyUtils
     [HasAttribute<MarkerAttribute>, HasAttribute<Marker2Attribute>]
     [IsAssignableTo<IMarkerInterface>, IsAssignableTo<IMarkerInterface2>]
     public static partial IReadOnlyList<Type> GetMarkedTypes();
-
+}
 ```
 
 For more details, check out the [sample project](samples/AotAssemblyScan.Sample).
