@@ -5,8 +5,12 @@ It streamlines the process of discovering types in assemblies, improving perform
 
 # How to use
 Using the library is straightforward. Here's how:
-1. Define a partial method and annotate it with the `[AssemblyScan]` attribute.
-2. Add other attributes to filter the types based on your requirements.
+1. Add a nuget package
+   ```shell
+   dotnet add package AotAssemblyScan
+   ```
+2. Define a partial method and annotate it with the `[AssemblyScan]` attribute.
+3. Add other attributes to filter the types based on your requirements.
 
 Example:
 ```csharp
