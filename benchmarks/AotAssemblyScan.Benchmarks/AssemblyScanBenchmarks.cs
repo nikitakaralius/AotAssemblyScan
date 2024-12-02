@@ -6,19 +6,20 @@ namespace AotAssemblyScan.Benchmarks;
 
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
+[BaselineColumn]
 public class AssemblyScanBenchmarks
 {
-    [Benchmark]
-    public Type[] Reflection()
+    [Benchmark(Baseline = true)]
+    public Type[] AotAssemblyScan()
     {
-        var types = ConfigurationExtensions.GetConfigurationTypesUsingReflection();
+        var types = ConfigurationExtensions.GetConfigurationTypesUsingAotAssemblyScan();
         return types;
     }
 
     [Benchmark]
-    public Type[] AotAssemblyScan()
+    public Type[] Reflection()
     {
-        var types = ConfigurationExtensions.GetConfigurationTypesUsingAotAssemblyScan();
+        var types = ConfigurationExtensions.GetConfigurationTypesUsingReflection();
         return types;
     }
 }
