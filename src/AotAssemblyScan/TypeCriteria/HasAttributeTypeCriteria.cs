@@ -1,14 +1,14 @@
 using Microsoft.CodeAnalysis;
 
-namespace AotAssemblyScan.TypeFilters;
+namespace AotAssemblyScan.TypeCriteria;
 
-public sealed class HasAttributeTypeFilter : ITypeFilter
+public sealed class HasAttributeTypeCriteria : ITypeCriteria
 {
     private const string AttributeTypeName = "HasAttributeAttribute";
 
     private readonly List<INamedTypeSymbol> _attributesToHave = [];
 
-    public bool TryAdd(AttributeData attribute)
+    public bool TryRegisterFor(AttributeData attribute)
     {
         var attributeClass = attribute.AttributeClass;
 
@@ -26,7 +26,7 @@ public sealed class HasAttributeTypeFilter : ITypeFilter
         return true;
     }
 
-    public bool Matches(INamedTypeSymbol type)
+    public bool Satisfies(INamedTypeSymbol type)
     {
         return _attributesToHave
            .All(attributeToHave => type

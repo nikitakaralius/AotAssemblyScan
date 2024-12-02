@@ -1,14 +1,14 @@
 using Microsoft.CodeAnalysis;
 
-namespace AotAssemblyScan.TypeFilters;
+namespace AotAssemblyScan.TypeCriteria;
 
-public sealed class IsAssignableToTypeFilter : ITypeFilter
+public sealed class IsAssignableToTypeCriteria : ITypeCriteria
 {
     private const string AttributeTypeName = "IsAssignableToAttribute";
 
     private readonly List<INamedTypeSymbol> _assignableToTypes = [];
 
-    public bool TryAdd(AttributeData attribute)
+    public bool TryRegisterFor(AttributeData attribute)
     {
         var attributeClass = attribute.AttributeClass;
 
@@ -26,7 +26,7 @@ public sealed class IsAssignableToTypeFilter : ITypeFilter
         return true;
     }
 
-    public bool Matches(INamedTypeSymbol type)
+    public bool Satisfies(INamedTypeSymbol type)
     {
         var typesToCheck = type.AllInterfaces.Add(type);
 

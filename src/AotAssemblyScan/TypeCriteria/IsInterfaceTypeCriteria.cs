@@ -1,13 +1,13 @@
 using Microsoft.CodeAnalysis;
 
-namespace AotAssemblyScan.TypeFilters;
+namespace AotAssemblyScan.TypeCriteria;
 
-public sealed class IsInterfaceTypeFilter : ITypeFilter
+public sealed class IsInterfaceTypeCriteria : ITypeCriteria
 {
     private const string AttributeTypeName = "IsInterfaceAttribute";
     private bool? _isInterface;
 
-    public bool TryAdd(AttributeData attribute)
+    public bool TryRegisterFor(AttributeData attribute)
     {
         var attributeClass = attribute.AttributeClass;
 
@@ -28,7 +28,7 @@ public sealed class IsInterfaceTypeFilter : ITypeFilter
         return true;
     }
 
-    public bool Matches(INamedTypeSymbol type)
+    public bool Satisfies(INamedTypeSymbol type)
     {
         return _isInterface switch
         {
