@@ -58,3 +58,17 @@ Set isInterface to true to include interfaces, or false to include only non-inte
 ### `[IsAbstractClass(isAbstractClass = true | false)]`
 Includes types based on whether they’re abstract classes.
 Set isAbstractClass to true for abstract types and false for non-abstract types.
+
+# Benchmarks
+This benchmark is available in the repository
+and compares AotAssemblyScan against traditional reflection.
+Here are the results:
+
+<img src="img/repo-sample-benchmark.png" alt="Repository Sample Benchmark">
+
+This benchmark was conducted in a project with over 40,000 lines of code that we run in production.
+Although the exact code can’t be shared, the results highlight the library’s real-world performance.
+Hope, I’ll be running more benchmarks
+using a large open-source project to see how AotAssemblyScan holds up in different environments.
+
+<img src="img/enterprise-app-benchmark.png" alt="Enterprise App Benchmark">

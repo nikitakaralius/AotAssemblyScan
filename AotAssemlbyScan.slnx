@@ -1,5 +1,9 @@
 ﻿<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks\AotAssemblyScan.Benchmarks\AotAssemblyScan.Benchmarks.csproj" Type="Classic C#" />
+  </Folder>
   <Folder Name="/samples/">
+    <Project Path="samples\AotAssemblyScan.Sample.Options\AotAssemblyScan.Sample.Options.csproj" Type="Classic C#" />
     <Project Path="samples\AotAssemblyScan.Sample\AotAssemblyScan.Sample.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/sln/">
