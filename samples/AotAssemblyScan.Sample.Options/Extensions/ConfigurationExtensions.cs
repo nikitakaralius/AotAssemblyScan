@@ -22,7 +22,7 @@ public static partial class ConfigurationExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        foreach (var type in GetConfigurationTypesUsingSourceGenerator())
+        foreach (var type in GetConfigurationTypesUsingAotAssemblyScan())
         {
             var property = type.GetProperty(
                 nameof(IApplicationOptions.Section),
@@ -50,7 +50,7 @@ public static partial class ConfigurationExtensions
     [AssemblyScan]
     [IsAssignableTo<IApplicationOptions>]
     [IsInterface(false), IsAbstract(false)]
-    public static partial Type[] GetConfigurationTypesUsingSourceGenerator();
+    public static partial Type[] GetConfigurationTypesUsingAotAssemblyScan();
 
     private static Configure BuildConfigureMethod(Type type)
     {
