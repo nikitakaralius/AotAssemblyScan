@@ -1,13 +1,13 @@
 using Microsoft.CodeAnalysis;
 
-namespace AotAssemblyScan.TypeFilters;
+namespace AotAssemblyScan.TypeCriteria;
 
-public sealed class IsAbstractTypeFilter : ITypeFilter
+public sealed class IsAbstractTypeCriteria : ITypeCriteria
 {
     private const string AttributeTypeName = "IsAbstractAttribute";
     private bool? _isAbstract;
 
-    public bool TryAdd(AttributeData attribute)
+    public bool TryRegisterFor(AttributeData attribute)
     {
         var attributeClass = attribute.AttributeClass;
 
@@ -28,7 +28,7 @@ public sealed class IsAbstractTypeFilter : ITypeFilter
         return true;
     }
 
-    public bool Matches(INamedTypeSymbol type)
+    public bool Satisfies(INamedTypeSymbol type)
     {
         if (_isAbstract is null)
             return true;

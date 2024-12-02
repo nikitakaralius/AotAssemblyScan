@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Text;
-using AotAssemblyScan.TypeFilters;
+using AotAssemblyScan.Extensions;
+using AotAssemblyScan.TypeCriteria;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -39,12 +40,12 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
     {
         var (compilation, methods) = source;
 
-        ITypeFilter[] filters =
+        ReadOnlySpan<ITypeCriteria> criteria =
         [
-            new IsAssignableToTypeFilter(),
-            new HasAttributeTypeFilter(),
-            new IsAbstractTypeFilter(),
-            new IsInterfaceTypeFilter()
+            new IsAssignableToTypeCriteria(),
+            new HasAttributeTypeCriteria(),
+            new IsAbstractTypeCriteria(),
+            new IsInterfaceTypeCriteria()
         ];
 
         foreach (var method in methods.Distinct())
@@ -54,13 +55,13 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
 
             foreach (var attributeData in methodSymbol.GetAttributes())
             {
-                foreach (var filter in filters)
+                foreach (var filter in criteria)
                 {
-                    filter.TryAdd(attributeData);
+                    filter.TryRegisterFor(attributeData);
                 }
             }
 
-            var matchingTypes = ScanAssemblyForMatchingTypes(compilation, filters);
+            var matchingTypes = ScanAssemblyForMatchingTypes(compilation, criteria);
 
             if (!TryGenerateMethodImplementation(methodSymbol, matchingTypes, out var sourceText))
                 continue;
@@ -77,7 +78,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
 
     private static List<INamedTypeSymbol> ScanAssemblyForMatchingTypes(
         Compilation compilation,
-        ITypeFilter[] filters)
+        ReadOnlySpan<ITypeCriteria> criteria)
     {
         var result = new List<INamedTypeSymbol>();
 
@@ -97,7 +98,7 @@ public sealed class AssemblyScanGenerator : IIncrementalGenerator
                 if (symbol is not INamedTypeSymbol typeSymbol)
                     continue;
 
-                if (filters.All(f => f.Matches(typeSymbol)))
+                if (criteria.All(f => f.Satisfies(typeSymbol)))
                     result.Add(typeSymbol);
             }
         }
