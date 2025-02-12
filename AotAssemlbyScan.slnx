@@ -1,4 +1,8 @@
 ﻿<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github\workflows\pull-request.yml" />
+  </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks\AotAssemblyScan.Benchmarks\AotAssemblyScan.Benchmarks.csproj" Type="Classic C#" />
   </Folder>

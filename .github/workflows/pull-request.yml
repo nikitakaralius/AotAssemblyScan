@@ -1,0 +1,21 @@
+name: Pull Request
+
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build ./AotAssemblyScan.sln --configuration Release --no-restore /warnaserror
+
+      - name: Test
+        run: dotnet test --no-restore
