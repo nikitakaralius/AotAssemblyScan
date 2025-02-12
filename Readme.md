@@ -51,7 +51,7 @@ The type must either inherit from T, implement T if it's an interface, or be T i
 ### `[HasAttribute<T>]`
 Includes types that have the specified attribute T.
 
-### `[IsInterface(isInsterface = true | false)]`
+### `[IsInterface(isInterface = true | false)]`
 Includes types based on whether they’re interfaces.
 Set isInterface to true to include interfaces, or false to include only non-interface types.
 
