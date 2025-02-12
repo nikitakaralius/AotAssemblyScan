@@ -1,4 +1,8 @@
 ﻿<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github\workflows\pull-request.yml" />
+  </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks\AotAssemblyScan.Benchmarks\AotAssemblyScan.Benchmarks.csproj" Type="Classic C#" />
   </Folder>
@@ -9,6 +13,9 @@
   <Folder Name="/sln/">
     <File Path="Readme.md" />
     <File Path=".gitignore" />
+    <File Path="src\Directory.Build.props" />
+    <File Path="src\Directory.Packages.props" />
+    <File Path="nuget.config" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\AotAssemblyScan.Abstractions\AotAssemblyScan.Abstractions.csproj" Type="Classic C#" />
