@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 2
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ./AotAssemblyScan.sln
 
       - name: Build
         run: dotnet build ./AotAssemblyScan.sln --configuration Release --no-restore /warnaserror
