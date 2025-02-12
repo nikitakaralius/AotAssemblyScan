@@ -20,7 +20,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build ./AotAssemblyScan.sln --configuration Release --no-restore /warnaserror
+        run: dotnet build ./AotAssemblyScan.slnx --configuration Release --no-restore /warnaserror
 
       - name: Test
         run: dotnet test --no-restore
