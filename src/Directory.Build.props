@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>0.1.3</Version>
+    <OutputType>Library</OutputType>
+    <Authors>Nikita Karalius</Authors>
+    <AssemblyTitle>AotAssemblyScan.Abstractions</AssemblyTitle>
+    <Description>
+      A library to improve assembly scanning using source generators instead of basic C# reflection.
+    </Description>
+    <RepositoryUrl>https://github.com/nikitakaralius/AotAssemblyScan</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/nikitakaralius/AotAssemblyScan</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageReleaseNotes>
+      Downgraded Microsoft.CodeAnalysis.CSharp to 4.3.0 since it wasn't compatible with some of the build tools
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+</Project>
